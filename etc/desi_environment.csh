@@ -9,6 +9,9 @@ if ( `basename ${SHELL}` == "csh" || `basename ${SHELL}` == "tcsh" ) then
     if ( "${NERSC_HOST}" == "edison" ) then
         hpcports shared_gnu
     endif
+    if ( "${NERSC_HOST}" == "hopper" )  then
+        hpcports shared_gnu
+    endif
     if ( "${NERSC_HOST}" == "carver" )  then
         if ( "${CHOS}" != "sl6carver" ) then
             echo "ERROR: The DESI environment requires Scientific Linux 6 (SL6) on carver."
@@ -21,10 +24,7 @@ if ( `basename ${SHELL}` == "csh" || `basename ${SHELL}` == "tcsh" ) then
             echo
             echo "After switching to SL6, source desi_environment.csh again."
             exit
-        endif 
-        hpcports gnu
-    endif
-    if ( "${NERSC_HOST}" == "hopper" )  then
+        endif
         hpcports gnu
     endif
     if ( "${NERSC_HOST}" == "datatran" || "${NERSC_HOST}" == "scigate" ) then
@@ -32,7 +32,7 @@ if ( `basename ${SHELL}` == "csh" || `basename ${SHELL}` == "tcsh" ) then
     endif
     if ( -d /project/projectdirs/desi/software/modules/${NERSC_HOST} ) then
         module use /project/projectdirs/desi/software/modules/${NERSC_HOST}
-        
+
         if ( $# > 0 ) then
             module load desiModules/$1
         else
