@@ -25,7 +25,7 @@ conflict $product
 set desiconda_version 20211217-2.0.0
 if {[info exists env(NERSC_HOST)]} {
     if { $env(NERSC_HOST) == "perlmutter" } {
-        set desiconda_version 20240425-2.2.0
+        set desiconda_version 20230111-2.1.0
         # https://docs.nersc.gov/current/#ongoing-issues
         setenv MPI4PY_RC_RECV_MPROBE "False"
         # https://docs.nersc.gov/development/languages/python/using-python-perlmutter/#mpi-issues
@@ -71,9 +71,6 @@ if { [info exists env(NERSC_HOST)] } {
     module load desiconda/$desiconda_version
     prereq desiconda
     setenv DESI_ROOT_READONLY /dvs_ro/cfs/cdirs/desi
-
-    # Use NERSC provided cudatoolkit
-    module load cudatoolkit/12.2
 }
 #
 # DESI-specific modules
