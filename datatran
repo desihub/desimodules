@@ -73,7 +73,7 @@ if { [info exists env(NERSC_HOST)] } {
 #
 # DESI-specific modules
 #
-module load desiutil/3.2.6
+module load desiutil/3.4.2
 prereq desiutil
 
 module load desitree/0.6.0
