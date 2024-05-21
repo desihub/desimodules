@@ -20,8 +20,18 @@ set _a = `alias module`
 if ( "${_a}" == "" ) source /usr/share/lmod/lmod/init/tcsh
 unset _a
 
-set version = $1
-set connection_file = $2
+if ( $# == 3 ) then
+    set version = $1
+    set release = $2
+    set connection_file = $3
+else
+    set version = $1
+    set release = ''
+    set connection_file = $2
+endif
 
 source /global/common/software/desi/desi_environment.csh ${version}
+if ( ${%release} != 0 ) then
+    module switch desitree/${release}
+endif
 exec python -m ipykernel_launcher -f ${connection_file}

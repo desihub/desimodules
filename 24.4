@@ -20,18 +20,20 @@ proc ModulesHelp { } {
 # change it.
 #
 set product desimodules
-set version 22.5
+set version 24.4
 conflict $product
 set desiconda_version 20211217-2.0.0
 if {[info exists env(NERSC_HOST)]} {
     if { $env(NERSC_HOST) == "perlmutter" } {
-        set desiconda_version 20220119-2.0.1
+        set desiconda_version 20240425-2.2.0
         # https://docs.nersc.gov/current/#ongoing-issues
         setenv MPI4PY_RC_RECV_MPROBE "False"
         # https://docs.nersc.gov/development/languages/python/using-python-perlmutter/#mpi-issues
         setenv CXI_FORK_SAFE 1
         setenv CXI_FORK_SAFE_HP 1
-        module unload cudatoolkit
+
+        # pin cudatoolkit version
+        module swap cudatoolkit/12.2
     }
 }
 #
@@ -70,41 +72,44 @@ if { [info exists env(NERSC_HOST)] } {
     module use $desiconda_modules_root
     module load desiconda/$desiconda_version
     prereq desiconda
+    setenv DESI_ROOT_READONLY /dvs_ro/cfs/cdirs/desi
 }
 #
 # DESI-specific modules
 #
-module load desiutil/3.2.5
+module load desiutil/3.4.2
 prereq desiutil
 
-module load desitree/0.5.0
+module load desitree/0.6.0
 prereq desitree
 
-module load specter/0.10.0
-module load desimodel/0.17.0
-module load specex/0.8.4
-module load desitarget/2.5.0
-module load specsim/v0.15
-module load desispec/0.53.1
-module load desisim/0.36.0
-module load fiberassign/5.6.0
-module load desisurvey/0.19.0
-module load surveysim/0.12.3
-module load redrock/0.15.4
-module load redrock-templates/0.7.2
-module load prospect/1.2.1
-module load desimeter/0.6.7
+# Main versions of most modules:
+module load specter/0.10.1
+module load gpu_specter/0.2.1
+module load desimodel/0.19.1
+module load specex/0.8.6
+module load desitarget/2.7.0
+module load specsim/v0.17
+module load desispec/0.63.0
+module load desisim/0.38.1
+module load fiberassign/5.7.2
+module load desisurvey/0.20.0
+module load surveysim/0.12.6
+module load redrock/0.20.0
+module load redrock-templates/0.9
+module load prospect/1.3.3
+module load desimeter/0.7.0
 module load simqso/v1.3.0
 module load dust/v0_1
-module load speclite/v0.15
-module load QuasarNP/0.1.3
-module load desietc/0.1.14
-module load gpu_specter/master
+module load speclite/v0.19
+module load QuasarNP/0.2.0
 module load specprod-db/1.1.0
+module load fastspecfit/2.5.2
 
-setenv DESI_SURVEYOPS $env(DESI_ROOT)/survey/ops/surveyops/trunk
+setenv DESI_SPECTRO_CALIB $env(DESI_ROOT)/spectro/desi_spectro_calib/0.6.0
+setenv DESI_SURVEYOPS $env(DESI_ROOT)/survey/ops/surveyops/tags/2.0
 
-setenv DESI_SPECTRO_CALIB $env(DESI_ROOT)/spectro/desi_spectro_calib/trunk
+# TODO: who sets DESI_SPECTRO_DARK?
 
 # may solve some OpenMP instabilities at NERSC
 setenv KMP_INIT_AT_FORK FALSE

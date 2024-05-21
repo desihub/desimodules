@@ -20,8 +20,18 @@ _i=bash
 [[ $(basename ${SHELL}) == "zsh" ]] && _i=zsh
 [[ $(declare -F module) ]] || source /usr/share/lmod/lmod/init/${_i}
 
-version=$1
-connection_file=$2
+if [[ $# == 3 ]]; then
+    version=$1
+    release=$2
+    connection_file=$3
+else
+    version=$1
+    release=''
+    connection_file=$2
+fi
 
 source /global/common/software/desi/desi_environment.sh ${version}
+if [[ -n "${release}" ]]; then
+    module switch desitree/${release}
+fi
 exec python -m ipykernel_launcher -f ${connection_file}
