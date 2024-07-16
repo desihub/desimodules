@@ -114,21 +114,21 @@ setenv DUST_DIR /global/cfs/cdirs/cosmo/data/dust/$dust_version
 setenv DUST_VERSION $dust_version
 #
 # NERSC performance settings.
+# See e.g., https://docs.nersc.gov/development/languages/python/using-python-perlmutter/#mpi-issues
 #
-# work around
-# https://docs.nersc.gov/development/languages/python/using-python-perlmutter/#mpi-issues
 if { [info exists env(NERSC_HOST)] } {
     if { $env(NERSC_HOST) == "perlmutter" } {
         # may solve some OpenMP instabilities at NERSC
         setenv KMP_INIT_AT_FORK FALSE
         # https://docs.nersc.gov/current/#ongoing-issues
         setenv MPI4PY_RC_RECV_MPROBE "False"
-        # https://docs.nersc.gov/development/languages/python/using-python-perlmutter/#mpi-issues
+        # https://docs.nersc.gov/development/languages/python/using-python-perlmutter/#issues-with-fork-in-mpi-processes
         setenv CXI_FORK_SAFE 1
         setenv CXI_FORK_SAFE_HP 1
         module unload cudatoolkit
         # Use NERSC provided cudatoolkit
         module load cudatoolkit/12.2
+        # https://docs.nersc.gov/development/languages/python/using-python-perlmutter/#conda-cray-mpich-libfabric-dependencies-missing-evp-symbols
         module load evp-patch
     }
 }
