@@ -23,15 +23,15 @@ set product desimodules
 set version main
 conflict $product
 set desiconda_version 20211217-2.0.0
-if {[info exists env(NERSC_HOST)]} {
+if { [info exists env(NERSC_HOST)] } {
     if { $env(NERSC_HOST) == "perlmutter" } {
         set desiconda_version 20240425-2.2.0
         # https://docs.nersc.gov/current/#ongoing-issues
-        setenv MPI4PY_RC_RECV_MPROBE "False"
+        # setenv MPI4PY_RC_RECV_MPROBE "False"
         # https://docs.nersc.gov/development/languages/python/using-python-perlmutter/#mpi-issues
-        setenv CXI_FORK_SAFE 1
-        setenv CXI_FORK_SAFE_HP 1
-        module unload cudatoolkit
+        # setenv CXI_FORK_SAFE 1
+        # setenv CXI_FORK_SAFE_HP 1
+        # module unload cudatoolkit
     }
 }
 #
@@ -70,10 +70,6 @@ if { [info exists env(NERSC_HOST)] } {
     module use $desiconda_modules_root
     module load desiconda/$desiconda_version
     prereq desiconda
-    setenv DESI_ROOT_READONLY /dvs_ro/cfs/cdirs/desi
-
-    # Use NERSC provided cudatoolkit
-    module load cudatoolkit/12.2
 }
 #
 # DESI-specific modules
@@ -101,21 +97,38 @@ module load redrock-templates/main
 module load prospect/main
 module load desimeter/main
 module load simqso/main
-module load dust/v0_1
+# module load dust/v0_1
 module load speclite/main
 module load QuasarNP/0.2.0
 module load specprod-db/main
 
+#
+# Environment variables that point to checkouts of software products, or
+# similar calibration products.
+#
+setenv DESI_ROOT_READONLY /dvs_ro/cfs/cdirs/desi
 setenv DESI_SPECTRO_CALIB $env(DESI_ROOT)/spectro/desi_spectro_calib/trunk
 setenv DESI_SURVEYOPS $env(DESI_ROOT)/survey/ops/surveyops/trunk
-
-# may solve some OpenMP instabilities at NERSC
-setenv KMP_INIT_AT_FORK FALSE
-
+set dust_version v0_1
+setenv DUST_DIR /global/cfs/cdirs/cosmo/data/dust/$dust_version
+setenv DUST_VERSION $dust_version
+#
+# NERSC performance settings.
+#
 # work around
 # https://docs.nersc.gov/development/languages/python/using-python-perlmutter/#mpi-issues
 if { [info exists env(NERSC_HOST)] } {
     if { $env(NERSC_HOST) == "perlmutter" } {
+        # may solve some OpenMP instabilities at NERSC
+        setenv KMP_INIT_AT_FORK FALSE
+        # https://docs.nersc.gov/current/#ongoing-issues
+        setenv MPI4PY_RC_RECV_MPROBE "False"
+        # https://docs.nersc.gov/development/languages/python/using-python-perlmutter/#mpi-issues
+        setenv CXI_FORK_SAFE 1
+        setenv CXI_FORK_SAFE_HP 1
+        module unload cudatoolkit
+        # Use NERSC provided cudatoolkit
+        module load cudatoolkit/12.2
         module load evp-patch
     }
 }
