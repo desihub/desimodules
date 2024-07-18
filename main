@@ -106,7 +106,7 @@ if { [info exists env(NERSC_HOST) ] } {
 setenv DESI_SPECTRO_CALIB $env(DESI_ROOT)/spectro/desi_spectro_calib/trunk
 setenv DESI_SPECTRO_DARK $env(DESI_ROOT)/spectro/desi_spectro_dark/latest
 setenv DESI_SURVEYOPS $env(DESI_ROOT)/survey/ops/surveyops/trunk
-setenv DESI_TILES $env(DESI_ROOT)/target/fiberassign/tiles/trunk
+setenv FIBER_ASSIGN_DIR $env(DESI_ROOT)/target/fiberassign/tiles/trunk
 setenv QN_MODEL_FILE $env(DESI_ROOT)/target/catalogs/lya/qn_models/qn_train_coadd_indtrain_0_0_boss10.h5
 setenv SQ_MODEL_FILE $env(DESI_ROOT)/target/catalogs/lya/sq_models/BOSS_train_64plates_model.json
 set dust_version v0_1
