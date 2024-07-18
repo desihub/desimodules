@@ -100,7 +100,9 @@ module load specprod-db/main
 # Environment variables that point to checkouts of software products, or
 # similar calibration products.
 #
-setenv DESI_ROOT_READONLY /dvs_ro/cfs/cdirs/desi
+if { [info exists env(NERSC_HOST) ] } {
+    setenv DESI_ROOT_READONLY /dvs_ro/cfs/cdirs/desi
+}
 setenv DESI_SPECTRO_CALIB $env(DESI_ROOT)/spectro/desi_spectro_calib/trunk
 setenv DESI_SPECTRO_DARK $env(DESI_ROOT)/spectro/desi_spectro_dark/latest
 setenv DESI_SURVEYOPS $env(DESI_ROOT)/survey/ops/surveyops/trunk
@@ -108,37 +110,41 @@ setenv DESI_TILES $env(DESI_ROOT)/target/fiberassign/tiles/trunk
 setenv QN_MODEL_FILE $env(DESI_ROOT)/target/catalogs/lya/qn_models/qn_train_coadd_indtrain_0_0_boss10.h5
 setenv SQ_MODEL_FILE $env(DESI_ROOT)/target/catalogs/lya/sq_models/BOSS_train_64plates_model.json
 set dust_version v0_1
-setenv DUST_DIR /global/cfs/cdirs/cosmo/data/dust/$dust_version
+setenv DUST_DIR $env(DESI_ROOT)/external/dust/$dust_version
 setenv DUST_VERSION $dust_version
 #
 # NERSC performance settings.
 # See e.g., https://docs.nersc.gov/development/languages/python/using-python-perlmutter/#mpi-issues
 #
+# Although these environment variables are somewhat NERSC-specific, they should
+# be harmless if set elsewhere.
+#
+# May solve some OpenMP instabilities at NERSC, however it is no longer known what those actual instabilities were.
+# See discussion in https://github.com/desihub/desimodules/pull/52.
+setenv KMP_INIT_AT_FORK FALSE
+# As of 2024, this is no longer listed as an ongoing issue in https://docs.nersc.gov/current/#ongoing-issues.
+# See discussion in https://github.com/desihub/desimodules/pull/52.
+setenv MPI4PY_RC_RECV_MPROBE "False"
+# https://docs.nersc.gov/development/languages/python/using-python-perlmutter/#issues-with-fork-in-mpi-processes
+setenv CXI_FORK_SAFE 1
+setenv CXI_FORK_SAFE_HP 1
+# Consolidated from desispec, redrock & fastspecfit module files.
+setenv KMP_AFFINITY disabled
+# Consolidated from desispec, redrock & fastspecfit module files.
+setenv MPICH_GNI_FORK_MODE FULLCOPY
+# Consolidated from redrock & fastspecfit module files.
+setenv OMP_NUM_THREADS 1
+# Moved from redrock module file.
+setenv HDF5_USE_FILE_LOCKING FALSE
+# Moved from fastspecfit module file.
+setenv MKL_NUM_THREADS 1
+#
+# Settings that can *only* be set at NERSC.
+#
 if { [info exists env(NERSC_HOST)] } {
     if { $env(NERSC_HOST) == "perlmutter" } {
-        # May solve some OpenMP instabilities at NERSC, however it is no longer known what those actual instabilities were.
-        # See discussion in https://github.com/desihub/desimodules/pull/52.
-        setenv KMP_INIT_AT_FORK FALSE
-        # As of 2024, this is no longer listed as an ongoing issue in https://docs.nersc.gov/current/#ongoing-issues.
-        # See discussion in https://github.com/desihub/desimodules/pull/52.
-        setenv MPI4PY_RC_RECV_MPROBE "False"
-        # https://docs.nersc.gov/development/languages/python/using-python-perlmutter/#issues-with-fork-in-mpi-processes
-        setenv CXI_FORK_SAFE 1
-        setenv CXI_FORK_SAFE_HP 1
-        # Consolidated from desispec, redrock & fastspecfit module files.
-        setenv KMP_AFFINITY disabled
-        # Consolidated from desispec, redrock & fastspecfit module files.
-        setenv MPICH_GNI_FORK_MODE FULLCOPY
-        # Consolidated from redrock & fastspecfit module files.
-        setenv OMP_NUM_THREADS 1
-        # Moved from redrock module file.
-        setenv HDF5_USE_FILE_LOCKING FALSE
-        # Moved from fastspecfit module file.
-        setenv MKL_NUM_THREADS 1
-        # Not clear why this is required because cudatoolkit/12.2 is the default anyway.
-        module unload cudatoolkit
-        # Use NERSC provided cudatoolkit
-        module load cudatoolkit/12.2
+        # Use a specific version of cudatoolkit.
+        module swap cudatoolkit/12.2
         # https://docs.nersc.gov/development/languages/python/using-python-perlmutter/#conda-cray-mpich-libfabric-dependencies-missing-evp-symbols
         module load evp-patch
     }
