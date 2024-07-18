@@ -22,7 +22,14 @@ proc ModulesHelp { } {
 set product desimodules
 set version main
 conflict $product
-set desiconda_version 20211217-2.0.0
+
+# NOTE: As of 2024-07-19, KPNO sets $DESI_PRODUCT_ROOT and
+# "module load desiconda" before loading desimodules,
+# in which case this desiconda_version isn't used at all.
+# The current structure is a leftover from supporting
+# cori+perlmutter, and it might be useful again in the future,
+# even if the if blocks are overkill right now.
+set desiconda_version 20240425-2.2.0
 if { [info exists env(NERSC_HOST)] } {
     if { $env(NERSC_HOST) == "perlmutter" } {
         set desiconda_version 20240425-2.2.0
