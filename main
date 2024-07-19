@@ -34,6 +34,9 @@ if { [info exists env(NERSC_HOST)] } {
     if { $env(NERSC_HOST) == "perlmutter" } {
         set desiconda_version 20240425-2.2.0
     }
+    if { $env(NERSC_HOST) == "datatran" } {
+        set desiconda_version 20220928-2.1.0
+    }
 }
 #
 # The line below is another part of the Modules help system.  You can
@@ -78,7 +81,7 @@ if { [info exists env(NERSC_HOST)] } {
 module load desiutil/main
 prereq desiutil
 
-module load desitree/0.6.0
+module load desitree/0.7.0
 prereq desitree
 
 # Main versions of most modules:
