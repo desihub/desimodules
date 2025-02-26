@@ -1,0 +1,120 @@
+#%Module1.0
+# The first line of this file tells Modules that this is a module file.
+# DO NOT ALTER IT!
+#
+# METADATA AND DOCUMENTATION SECTION
+#
+# This function is part of the Modules help system.  You can modify
+# the second line if needed, but most products should
+# leave this alone.
+#
+proc ModulesHelp { } {
+    global product version
+    puts stderr "This module adds $product/$version to your environment."
+}
+#
+# These variables are used below.  The product variable should be set to
+# the name of the product and never changed.  The version variable will
+# be set at install time, so it should be left alone.  The conflict line
+# prevents multiple versions from being loaded simultaneously.  Do not
+# change it.
+#
+set product desimodules
+set version iron
+conflict $product
+set desiconda_version 20211217-2.0.0
+if {[info exists env(NERSC_HOST)]} {
+    if { $env(NERSC_HOST) == "perlmutter" } {
+        set desiconda_version 20230111-2.1.0
+        # https://docs.nersc.gov/current/#ongoing-issues
+        setenv MPI4PY_RC_RECV_MPROBE "False"
+        # https://docs.nersc.gov/development/languages/python/using-python-perlmutter/#mpi-issues
+        setenv CXI_FORK_SAFE 1
+        setenv CXI_FORK_SAFE_HP 1
+        module unload cudatoolkit
+    }
+}
+#
+# The line below is another part of the Modules help system.  You can
+# modify the part in quotes if you really need to, but most products should
+# leave this alone.
+#
+module-whatis "Sets up $product/$version in your environment."
+#
+# ENVIRONMENT SECTION
+#
+# The PRODUCT_ROOT and PRODUCT_DIR variables are used to set other
+# environment variables but are not exported to the actual environment.
+# If you are not working at NERSC, but still want to use Modules, you
+# will need to set the DESI_PRODUCT_ROOT environment variable
+#
+if {[info exists env(DESI_PRODUCT_ROOT)]} {
+    set code_root $env(DESI_PRODUCT_ROOT)/code
+} else {
+    set code_root /global/common/software/desi/$env(NERSC_HOST)/desiconda/$desiconda_version/code
+}
+set PRODUCT_DIR /global/common/software/desi/$env(NERSC_HOST)/desiconda/startup/modulefiles/$product
+#
+# This line creates an environment variable pointing to the install
+# directory of your product.
+#
+setenv [string toupper $product] $PRODUCT_DIR
+setenv [string toupper $product]_VERSION $version
+#
+# desiconda contains the external products that we need for most DESI work.
+# The value of $desiconda_version, defined above, may change depending
+# on system, e.g. cori v. datatran.
+#
+if { [info exists env(NERSC_HOST)] } {
+    set desiconda_modules_root [string map {/code /modulefiles} $code_root]
+    module use $desiconda_modules_root
+    module load desiconda/$desiconda_version
+    prereq desiconda
+    setenv DESI_ROOT_READONLY /dvs_ro/cfs/cdirs/desi
+}
+#
+# DESI-specific modules
+#
+module load desiutil/3.2.6
+prereq desiutil
+
+module load desitree/0.6.0
+prereq desitree
+
+# Main versions of most modules:
+module load specter/0.10.1
+module load gpu_specter/0.2.0
+module load desimodel/0.18.0
+module load specex/0.8.5
+module load desitarget/2.6.0
+module load specsim/v0.16
+module load desispec/0.56.5
+module load desisim/0.37.1
+module load fiberassign/5.7.0
+module load desisurvey/0.19.0
+module load surveysim/0.12.5
+module load redrock/0.17.0
+module load redrock-templates/0.8
+module load prospect/1.2.4
+module load desimeter/0.7.0
+module load simqso/v1.3.0
+module load dust/v0_1
+module load speclite/v0.16
+module load QuasarNP/0.1.3
+module load specprod-db/1.2.0
+
+setenv DESI_SPECTRO_CALIB $env(DESI_ROOT)/spectro/desi_spectro_calib/0.4.0
+setenv DESI_SURVEYOPS $env(DESI_ROOT)/survey/ops/surveyops/trunk
+
+# may solve some OpenMP instabilities at NERSC
+setenv KMP_INIT_AT_FORK FALSE
+
+# work around
+# https://docs.nersc.gov/development/languages/python/using-python-perlmutter/#mpi-issues
+if { [info exists env(NERSC_HOST)] } {
+    if { $env(NERSC_HOST) == "perlmutter" } {
+        module load evp-patch
+    }
+}
+
+setenv SPECPROD iron
