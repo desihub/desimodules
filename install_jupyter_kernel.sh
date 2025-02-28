@@ -7,6 +7,8 @@
 function usage() {
     local execName=$(basename $0)
     (
+    echo "DEPRECATED: this still works, but please use install_jupyter_kernel (without .sh) instead"
+    echo ""
     echo "${execName} [-h] [-v] RELEASE"
     echo ""
     echo "Install a Jupyter kernel definition."
@@ -28,6 +30,9 @@ while getopts hv argname; do
     esac
 done
 shift $((OPTIND - 1))
+
+echo "DEPRECATED: while this script still works, please use install_jupyter_kernel (without .sh) instead"
+
 #
 # Make sure release actually exists.
 #
