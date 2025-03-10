@@ -26,6 +26,12 @@ set desiconda_version 20211217-2.0.0
 if {[info exists env(NERSC_HOST)]} {
    if { $env(NERSC_HOST) == "perlmutter" } {
       set desiconda_version 20220119-2.0.1
+      # https://docs.nersc.gov/current/#ongoing-issues
+      setenv MPI4PY_RC_RECV_MPROBE "False"
+      # https://docs.nersc.gov/development/languages/python/using-python-perlmutter/#mpi-issues
+      setenv CXI_FORK_SAFE 1
+      setenv CXI_FORK_SAFE_HP 1
+      module unload cudatoolkit
    }
 }
 #
@@ -100,5 +106,13 @@ setenv DESI_SPECTRO_CALIB $env(DESI_ROOT)/spectro/desi_spectro_calib/0.3.1
 
 # may solve some OpenMP instabilities at NERSC
 setenv KMP_INIT_AT_FORK FALSE
+
+# work around
+# https://docs.nersc.gov/development/languages/python/using-python-perlmutter/#mpi-issues
+if { [info exists env(NERSC_HOST)] } {
+    if { $env(NERSC_HOST) == "perlmutter" } {
+        module load evp-patch
+    }
+}
 
 setenv SPECPROD guadalupe
