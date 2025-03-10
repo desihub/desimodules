@@ -20,11 +20,11 @@ useful for setting up these meta-modules:
 
 There are equivalent scripts for tcsh.
 
-The script ``install_juypter_kernel.sh`` allows users to install Jupyter notebook
+The script ``install_juypter_kernel`` allows users to install Jupyter notebook
 kernels in their home directories that are loaded with a particular
 desimodules release.  To install a particular desimodules release, just do::
 
-    install_jupyter_kernel.sh 23.1
+    install_jupyter_kernel -v 23.1
 
 to install release 23.1.
 
