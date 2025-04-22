@@ -112,9 +112,10 @@ setenv KMP_INIT_AT_FORK FALSE
 
 # work around
 # https://docs.nersc.gov/development/languages/python/using-python-perlmutter/#mpi-issues
-if { [info exists env(NERSC_HOST)] } {
-    if { $env(NERSC_HOST) == "perlmutter" } {
-        module load evp-patch
-    }
-}
+# no longer needed after March 2025 maintenance
+# if { [info exists env(NERSC_HOST)] } {
+#     if { $env(NERSC_HOST) == "perlmutter" } {
+#         module load evp-patch
+#     }
+# }
 

@@ -156,7 +156,8 @@ if { [info exists env(NERSC_HOST)] } {
         # Use a specific version of cudatoolkit.
         module swap cudatoolkit/12.2
         # https://docs.nersc.gov/development/languages/python/using-python-perlmutter/#conda-cray-mpich-libfabric-dependencies-missing-evp-symbols
-        module load evp-patch
+        # no longer needed after March 2025 maintenance
+        # module load evp-patch
     }
 }
 
