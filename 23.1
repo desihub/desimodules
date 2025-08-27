@@ -118,3 +118,6 @@ setenv KMP_INIT_AT_FORK FALSE
 #     }
 # }
 
+# 2025-08-27 - workaround for cray-mpich/8.1.25 incompatibility
+# introduced during 2025-08-20 maintenance, impacting multi-node MPI jobs
+module load libfabric/temp-workaround
